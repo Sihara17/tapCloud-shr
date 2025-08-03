@@ -1,0 +1,15 @@
+.root {
+    padding: 10px;
+}
+
+.button {
+    padding: 8px 12px;
+    border-radius: 99px;
+    border: none;
+}
+
+.body {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
