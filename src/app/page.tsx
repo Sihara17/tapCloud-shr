@@ -1,90 +1,80 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Coins, Wallet, Trophy, Zap, Gift, Settings } from "lucide-react"
+import React, { useEffect, useState } from "react";
+import { Coins, Wallet, Trophy, Zap, Gift, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { WalletButton } from "@/components/Wallet/Button/WalletButton";
+import { useWalletAccountStore } from "@/components/Wallet/Account/auth.hooks";
 
 interface CoinAnimation {
-  id: number
-  x: number
-  y: number
+  id: number;
+  x: number;
+  y: number;
 }
 
-export default function TapToEarnApp() {
-  const [coins, setCoins] = useState(0)
-  const [energy, setEnergy] = useState(100)
-  const [level, setLevel] = useState(1)
-  const [coinsPerTap, setCoinsPerTap] = useState(1)
-  const [coinAnimations, setCoinAnimations] = useState<CoinAnimation[]>([])
-  const [isConnected, setIsConnected] = useState(false)
-  const [dailyReward, setDailyReward] = useState(true)
+export default function Home() {
+  const { account } = useWalletAccountStore();
+  const [coins, setCoins] = useState(0);
+  const [energy, setEnergy] = useState(100);
+  const [level, setLevel] = useState(1);
+  const [coinsPerTap, setCoinsPerTap] = useState(1);
+  const [coinAnimations, setCoinAnimations] = useState<CoinAnimation[]>([]);
+  const [dailyReward, setDailyReward] = useState(true);
+  const [combo, setCombo] = useState(0);
 
-  // Energy regeneration
+  // Energy regen
   useEffect(() => {
     const interval = setInterval(() => {
-      setEnergy((prev) => Math.min(prev + 1, 100))
-    }, 3000) // Regenerate 1 energy every 3 seconds
+      setEnergy((prev) => Math.min(prev + 1, 100));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-    return () => clearInterval(interval)
-  }, [])
-
-  // Level up logic
+  // Level up
   useEffect(() => {
-    const newLevel = Math.floor(coins / 1000) + 1
+    const newLevel = Math.floor(coins / 1000) + 1;
     if (newLevel > level) {
-      setLevel(newLevel)
-      setCoinsPerTap(newLevel)
+      setLevel(newLevel);
+      setCoinsPerTap(newLevel);
     }
-  }, [coins, level])
+  }, [coins, level]);
 
-  // Clean up coin animations
+  // Clear animations
   useEffect(() => {
-    const cleanup = setTimeout(() => {
-      setCoinAnimations([])
-    }, 1000)
+    const cleanup = setTimeout(() => setCoinAnimations([]), 1000);
+    return () => clearTimeout(cleanup);
+  }, [coinAnimations]);
 
-    return () => clearTimeout(cleanup)
-  }, [coinAnimations])
-
-  const handleTap = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleTap = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (energy > 0) {
-      const rect = event.currentTarget.getBoundingClientRect()
-      const x = event.clientX - rect.left
-      const y = event.clientY - rect.top
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-      setCoins((prev) => prev + coinsPerTap)
-      setEnergy((prev) => Math.max(prev - 1, 0))
+      setCoins((prev) => prev + coinsPerTap);
+      setEnergy((prev) => Math.max(prev - 1, 0));
+      setCombo((prev) => prev + 1);
 
-      // Add coin animation
-      const newAnimation: CoinAnimation = {
-        id: Date.now() + Math.random(),
-        x,
-        y,
-      }
-      setCoinAnimations((prev) => [...prev, newAnimation])
+      setCoinAnimations((prev) => [
+        ...prev,
+        { id: Date.now() + Math.random(), x, y },
+      ]);
     }
-  }
-
-  const connectWallet = () => {
-    setIsConnected(true)
-  }
+  };
 
   const claimDailyReward = () => {
     if (dailyReward) {
-      setCoins((prev) => prev + 500)
-      setDailyReward(false)
-      // Reset daily reward after 24 hours (simplified to 10 seconds for demo)
-      setTimeout(() => setDailyReward(true), 10000)
+      setCoins((prev) => prev + 500);
+      setDailyReward(false);
+      setTimeout(() => setDailyReward(true), 10000);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 bg-black/20 backdrop-blur-sm">
         <div className="flex items-center gap-2">
@@ -95,15 +85,11 @@ export default function TapToEarnApp() {
           <Badge variant="secondary" className="bg-green-600">
             Level {level}
           </Badge>
-          <Button
-            size="sm"
-            variant={isConnected ? "secondary" : "default"}
-            onClick={connectWallet}
-            className="flex items-center gap-1"
-          >
-            <Wallet className="w-4 h-4" />
-            {isConnected ? "Connected" : "Connect"}
-          </Button>
+          {account ? (
+            <Badge className="bg-white text-black text-xs px-2 py-1">Connected</Badge>
+          ) : (
+            <WalletButton />
+          )}
         </div>
       </div>
 
@@ -135,30 +121,32 @@ export default function TapToEarnApp() {
         </Card>
       </div>
 
-      {/* Main Tap Area */}
+      {/* Tap Area */}
       <div className="flex-1 flex items-center justify-center p-8 relative">
-        <Button
-          onClick={handleTap}
-          disabled={energy === 0}
-          className="w-48 h-48 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 disabled:from-gray-600 disabled:to-gray-700 shadow-2xl transform transition-all duration-150 active:scale-95 relative overflow-hidden"
-        >
-          <Coins className="w-20 h-20" />
-
-          {/* Coin animations */}
-          {coinAnimations.map((animation) => (
-            <div
-              key={animation.id}
-              className="absolute pointer-events-none animate-bounce"
-              style={{
-                left: animation.x - 10,
-                top: animation.y - 10,
-                animation: "float-up 1s ease-out forwards",
-              }}
-            >
-              <span className="text-yellow-300 font-bold text-lg">+{coinsPerTap}</span>
-            </div>
-          ))}
-        </Button>
+        {account ? (
+          <Button
+            onClick={handleTap}
+            disabled={energy === 0}
+            className="w-48 h-48 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 disabled:from-gray-600 disabled:to-gray-700 shadow-2xl relative overflow-hidden"
+          >
+            <Coins className="w-20 h-20" />
+            {coinAnimations.map((a) => (
+              <div
+                key={a.id}
+                className="absolute pointer-events-none"
+                style={{
+                  left: a.x - 10,
+                  top: a.y - 10,
+                  animation: "float-up 1s ease-out forwards",
+                }}
+              >
+                <span className="text-yellow-300 font-bold text-lg">+{coinsPerTap}</span>
+              </div>
+            ))}
+          </Button>
+        ) : (
+          <p className="text-lg text-white">Please connect your wallet</p>
+        )}
 
         {energy === 0 && (
           <div className="absolute bottom-4 text-center">
@@ -194,7 +182,14 @@ export default function TapToEarnApp() {
         </div>
       )}
 
-      {/* Bottom Navigation */}
+      {/* Combo Counter */}
+      {account && (
+        <div className="text-center mb-2 text-sm text-yellow-300">
+          {combo > 0 && <p>🔥 {combo} combo!</p>}
+        </div>
+      )}
+
+      {/* Bottom Nav */}
       <div className="grid grid-cols-3 gap-2 p-4 bg-black/20 backdrop-blur-sm">
         <Button variant="ghost" className="flex flex-col gap-1 h-auto py-3">
           <Coins className="w-5 h-5" />
@@ -210,6 +205,7 @@ export default function TapToEarnApp() {
         </Button>
       </div>
 
+      {/* Coin Animation CSS */}
       <style jsx>{`
         @keyframes float-up {
           0% {
@@ -223,5 +219,5 @@ export default function TapToEarnApp() {
         }
       `}</style>
     </div>
-  )
+  );
 }
