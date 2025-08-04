@@ -1,5 +1,5 @@
-// next.config.js
-import path from "path";
+// next.config.js (CommonJS)
+const path = require("path");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -18,4 +18,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
