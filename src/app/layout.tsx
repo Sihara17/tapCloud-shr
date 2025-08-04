@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import {Footer} from "@/components/Footer/Footer";
-import {Bootstrap} from "@/components/Bootstrap/Bootstrap";
-import {QueryClientProvider} from "@tanstack/react-query";
-import {queryClient} from "@/components/Query/QueryClient.hooks";
+import { Footer } from "@/components/Footer/Footer";
+import { Bootstrap } from "@/components/Bootstrap/Bootstrap";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/components/Query/QueryClient.hooks";
 import styles from "./layout.module.css";
 
 const geistSans = Geist({
@@ -30,12 +30,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-          <QueryClientProvider client={queryClient}>
-              <Bootstrap className={styles.root}>
-                  {children}
-                  <Footer className={styles.footer}/>
-              </Bootstrap>
-          </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <Bootstrap className={styles.root}>
+            {children}
+            <Footer className={styles.footer} />
+          </Bootstrap>
+        </QueryClientProvider>
       </body>
     </html>
   );
