@@ -1,7 +1,7 @@
 "use client";
 
 import {ReactNode, useEffect} from "react";
-import {useKaiaWalletSecurity} from "@/components/Wallet/Sdk/walletSdk.hooks";
+import {useKaiaWalletSecurity} from "@/components/wallet/Sdk/walletSdk.hooks";
 
 export type BootstrapProps = {
     className?: string;
