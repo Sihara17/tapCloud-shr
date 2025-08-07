@@ -1,25 +1,29 @@
 "use client";
 
-import {ItemCard} from "@/components/item/ItemCard";
-import styles from "./page.module.css";
-import {usePaymentSdk} from "@/components/store/sdk/paymentSdk.hooks";
 import {useCallback} from "react";
+import {liff} from "@/utils/liff";
+import {useShareTargetPicker} from "@/components/invitation/Invitation.hooks";
+import styles from "./page.module.css";
 
-export default function Store () {
-    const { openPaymentHistory } = usePaymentSdk();
+export default function Profile() {
+    const { mutateAsync: openShareTargetPicker } = useShareTargetPicker();
 
-    const onPaymentHistoryButtonClick = useCallback(() => {
-        openPaymentHistory();
-    },[openPaymentHistory]);
+    const onInvitationButtonClick = useCallback(() => {
+        if (liff.isInClient()) {
+            openShareTargetPicker();
+        } else {
+            navigator.clipboard
+                .writeText("https://dapp-starter.netlify.app")
+                .then(() => alert("URL Copy Success!"))
+                .catch(() => alert("URL Copy Failed!"));
+        }
+    }, [openShareTargetPicker]);
+
     return (
         <div className={styles.root}>
-            <div className={styles.header}>
-                <button onClick={onPaymentHistoryButtonClick} className={styles.button}>payment history</button>
-            </div>
-            <div className={styles.body}>
-                <ItemCard itemIdentifier="item_1" name="item_1" imageUrl='/images/logo.png' price={1} currencyCode="USD" />
-                <ItemCard itemIdentifier="item_2" name="item_2" imageUrl='/images/logo.png' price={2} currencyCode="USD" />
-            </div >
+            <button onClick={onInvitationButtonClick} className={styles.button}>
+                Invite Friends
+            </button>
         </div>
     );
 }
