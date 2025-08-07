@@ -2,13 +2,13 @@
 
 import styles from "./ItemCard.module.css";
 import {useCallback, useEffect, useState} from 'react';
-import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
+import {useWalletAccountStore} from "@/components/wallet/account/auth.hooks";
 import {
   Item,
   PG_TYPE,
   useCreatePaymentId,
   usePaymentSdk
-} from "@/components/Store/Sdk/paymentSdk.hooks";
+} from "@/components/store/Sdk/paymentSdk.hooks";
 import Image from "next/image";
 import axios from "axios";
 
