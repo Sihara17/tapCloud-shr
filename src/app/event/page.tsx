@@ -1,24 +1,35 @@
 "use client";
 
+import {useWalletAccountStore} from "@/components/wallet/account/auth.hooks";
+import {useKaiaWalletSdk} from "@/components/wallet/sdk/walletSdk.hooks";
 import {useCallback} from "react";
-import {liff} from "@/utils/liff";
-import {useShareTargetPicker} from "@/components/invitation/Invitation.hooks";
 import styles from "./page.module.css";
 
-export default function Event () {
-    const { mutateAsync: openShareTargetPicker } = useShareTargetPicker();
-    const onInvitationButtonClick = useCallback(() => {
-        if(liff.isInClient()){
-            openShareTargetPicker();
-        }
-        else{
-            navigator.clipboard.writeText('https://dapp-starter.netlify.app').then(()=> alert('URL Copy Success!')).catch(() => alert('URL Copy Failed!'));
-        }
+export default function Event() {
+    const { account, setAccount } = useWalletAccountStore();
+    const { disconnectWallet } = useKaiaWalletSdk();
 
-    },[openShareTargetPicker]);
+    const onDisconnectButtonClick = useCallback(() => {
+        disconnectWallet().then(() => {
+            setAccount(null);
+            sessionStorage.removeItem('ACCOUNT');
+        });
+    }, [disconnectWallet, setAccount]);
+
     return (
         <div className={styles.root}>
-            <button onClick={onInvitationButtonClick} className={styles.button}>Invite Friends</button>
+            <div className={styles.body}>
+                {account ? (
+                    <>
+                        <p>wallet address: {account.slice(0, 5) + '...' + account.slice(-3)}</p>
+                        <button className={styles.button} onClick={onDisconnectButtonClick}>
+                            disconnect
+                        </button>
+                    </>
+                ) : (
+                    <>need login</>
+                )}
+            </div>
         </div>
     );
 }
