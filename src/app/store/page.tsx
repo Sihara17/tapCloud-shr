@@ -1,8 +1,8 @@
 "use client";
 
-import {ItemCard} from "@/components/Item/ItemCard";
+import {ItemCard} from "@/components/item/ItemCard";
 import styles from "./page.module.css";
-import {usePaymentSdk} from "@/components/Store/Sdk/paymentSdk.hooks";
+import {usePaymentSdk} from "@/components/store/Sdk/paymentSdk.hooks";
 import {useCallback} from "react";
 
 export default function Store () {
