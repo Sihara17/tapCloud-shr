@@ -20,7 +20,6 @@
       "@/*": ["*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
-      "@lib/*": ["lib/*"],
       "@utils/*": ["utils/*"],
       "@ui/*": ["components/ui/*"]
     },
