@@ -2,7 +2,7 @@
 
 import {useCallback} from "react";
 import {liff} from "@/utils/liff";
-import {useShareTargetPicker} from "@/components/Invitation/Invitation.hooks";
+import {useShareTargetPicker} from "@/components/invitation/Invitation.hooks";
 import styles from "./page.module.css";
 
 export default function Event () {
