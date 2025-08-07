@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import {useKaiaWalletSdkStore} from "@/components/wallet/Sdk/walletSdk.hooks";
+import {useKaiaWalletSdkStore} from "@/components/wallet/sdk/walletSdk.hooks";
 
 export type PG_TYPE = 'CRYPTO' | 'STRIPE';
 export type CurrencyCode = 'USD'| 'KRW'|'JPY'|'TWD'|'THB'|'KAIA';
