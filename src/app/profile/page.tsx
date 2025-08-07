@@ -1,7 +1,7 @@
 "use client";
 
-import {useWalletAccountStore} from "@/components/Wallet/Account/auth.hooks";
-import {useKaiaWalletSdk} from "@/components/Wallet/Sdk/walletSdk.hooks";
+import {useWalletAccountStore} from "@/components/wallet/account/auth.hooks";
+import {useKaiaWalletSdk} from "@/components/wallet/Sdk/walletSdk.hooks";
 import {useCallback} from "react";
 import styles from "./page.module.css";
 
