@@ -2,12 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Coins, Wallet, Trophy, Zap, Gift, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { WalletButton } from "@/components/Wallet/Button/WalletButton";
-import { useWalletAccountStore } from "@/components/Wallet/Account/auth.hooks";
+import { WalletButton } from "@/components/wallet/button/WalletButton";
+import { useWalletAccountStore } from "@/components/wallet/account/auth.hooks";
 
 interface CoinAnimation {
   id: number;
@@ -25,7 +21,7 @@ export default function Home() {
   const [dailyReward, setDailyReward] = useState(true);
   const [combo, setCombo] = useState(0);
 
-  // Energy regen
+  // Regen energi
   useEffect(() => {
     const interval = setInterval(() => {
       setEnergy((prev) => Math.min(prev + 1, 100));
@@ -33,7 +29,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Level up
+  // Level up otomatis
   useEffect(() => {
     const newLevel = Math.floor(coins / 1000) + 1;
     if (newLevel > level) {
@@ -42,7 +38,7 @@ export default function Home() {
     }
   }, [coins, level]);
 
-  // Clear animations
+  // Hapus animasi koin
   useEffect(() => {
     const cleanup = setTimeout(() => setCoinAnimations([]), 1000);
     return () => clearTimeout(cleanup);
@@ -82,49 +78,48 @@ export default function Home() {
           <span className="text-xl font-bold">{coins.toLocaleString()}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant="secondary" className="bg-green-600">
-            Level {level}
-          </Badge>
+          <span className="bg-green-600 px-2 py-1 rounded text-xs">Level {level}</span>
           {account ? (
-            <Badge className="bg-white text-black text-xs px-2 py-1">Connected</Badge>
+            <span className="bg-white text-black text-xs px-2 py-1 rounded">Connected</span>
           ) : (
             <WalletButton />
           )}
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats */}
       <div className="grid grid-cols-2 gap-4 p-4">
-        <Card className="bg-black/30 border-purple-500/30">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-blue-400" />
-              <div>
-                <p className="text-sm text-gray-300">Energy</p>
-                <Progress value={energy} className="w-full h-2 mt-1" />
-                <p className="text-xs text-gray-400 mt-1">{energy}/100</p>
+        <div className="bg-black/30 p-3 rounded border border-purple-500/30">
+          <div className="flex items-center gap-2">
+            <Zap className="w-5 h-5 text-blue-400" />
+            <div>
+              <p className="text-sm text-gray-300">Energy</p>
+              <div className="w-full h-2 bg-gray-700 rounded mt-1">
+                <div
+                  className="h-full bg-blue-400 rounded"
+                  style={{ width: `${energy}%` }}
+                ></div>
               </div>
+              <p className="text-xs text-gray-400 mt-1">{energy}/100</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="bg-black/30 border-purple-500/30">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-yellow-400" />
-              <div>
-                <p className="text-sm text-gray-300">Per Tap</p>
-                <p className="text-lg font-bold text-yellow-400">+{coinsPerTap}</p>
-              </div>
+        <div className="bg-black/30 p-3 rounded border border-purple-500/30">
+          <div className="flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-yellow-400" />
+            <div>
+              <p className="text-sm text-gray-300">Per Tap</p>
+              <p className="text-lg font-bold text-yellow-400">+{coinsPerTap}</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Tap Area */}
       <div className="flex-1 flex items-center justify-center p-8 relative">
         {account ? (
-          <Button
+          <button
             onClick={handleTap}
             disabled={energy === 0}
             className="w-48 h-48 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 disabled:from-gray-600 disabled:to-gray-700 shadow-2xl relative overflow-hidden"
@@ -143,7 +138,7 @@ export default function Home() {
                 <span className="text-yellow-300 font-bold text-lg">+{coinsPerTap}</span>
               </div>
             ))}
-          </Button>
+          </button>
         ) : (
           <p className="text-lg text-white">Please connect your wallet</p>
         )}
@@ -159,26 +154,23 @@ export default function Home() {
       {/* Daily Reward */}
       {dailyReward && (
         <div className="p-4">
-          <Card className="bg-gradient-to-r from-green-600 to-emerald-600 border-green-400">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Gift className="w-6 h-6" />
-                  <div>
-                    <p className="font-semibold">Daily Reward Available!</p>
-                    <p className="text-sm opacity-90">Claim 500 coins</p>
-                  </div>
+          <div className="bg-gradient-to-r from-green-600 to-emerald-600 border border-green-400 p-4 rounded">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Gift className="w-6 h-6" />
+                <div>
+                  <p className="font-semibold">Daily Reward Available!</p>
+                  <p className="text-sm opacity-90">Claim 500 coins</p>
                 </div>
-                <Button
-                  onClick={claimDailyReward}
-                  variant="secondary"
-                  className="bg-white text-green-600 hover:bg-gray-100"
-                >
-                  Claim
-                </Button>
               </div>
-            </CardContent>
-          </Card>
+              <button
+                onClick={claimDailyReward}
+                className="bg-white text-green-600 hover:bg-gray-100 px-4 py-2 rounded text-sm font-semibold"
+              >
+                Claim
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -189,23 +181,24 @@ export default function Home() {
         </div>
       )}
 
-      {/* Bottom Nav */}
+      {/* Bottom Navigation */}
       <div className="grid grid-cols-3 gap-2 p-4 bg-black/20 backdrop-blur-sm">
-        <Button variant="ghost" className="flex flex-col gap-1 h-auto py-3">
-          <Coins className="w-5 h-5" />
-          <span className="text-xs">Earn</span>
-        </Button>
-        <Button variant="ghost" className="flex flex-col gap-1 h-auto py-3">
-          <Wallet className="w-5 h-5" />
-          <span className="text-xs">Wallet</span>
-        </Button>
-        <Button variant="ghost" className="flex flex-col gap-1 h-auto py-3">
-          <Settings className="w-5 h-5" />
-          <span className="text-xs">Settings</span>
-        </Button>
+        {[
+          { icon: <Coins className="w-5 h-5" />, label: "Earn" },
+          { icon: <Wallet className="w-5 h-5" />, label: "Wallet" },
+          { icon: <Settings className="w-5 h-5" />, label: "Settings" },
+        ].map(({ icon, label }) => (
+          <button
+            key={label}
+            className="flex flex-col items-center gap-1 h-auto py-3 hover:bg-white/10 rounded"
+          >
+            {icon}
+            <span className="text-xs">{label}</span>
+          </button>
+        ))}
       </div>
 
-      {/* Coin Animation CSS */}
+      {/* Animation Keyframe */}
       <style jsx>{`
         @keyframes float-up {
           0% {
