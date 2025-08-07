@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
-<<<<<<< HEAD
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-=======
     "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
->>>>>>> 8ca6b18 (fix: perbaiki import WalletButton case-sensitive & path)
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -24,11 +21,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-<<<<<<< HEAD
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-=======
     "baseUrl": "src",
     "paths": {
       "@components/*": [
@@ -46,7 +41,6 @@
       "@ui/*": [
         "components/ui/*"
       ]
->>>>>>> 8ca6b18 (fix: perbaiki import WalletButton case-sensitive & path)
     },
     "plugins": [
       {
